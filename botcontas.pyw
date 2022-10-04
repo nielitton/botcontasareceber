@@ -1,24 +1,58 @@
 from playwright.sync_api import sync_playwright
 
-
-
 with sync_playwright() as p:
+    fim = 0
     def waitTimeout(seconds):
         pageBling.wait_for_timeout(seconds)
-
-
-    browser = p.chromium.launch(headless=False)
+    browser   = p.chromium.launch(headless=False)
     pageBling = browser.new_page()
     pageBling.goto("https://www.bling.com.br/contas.receber.php")
+    waitTimeout(2000)
+    pageBling.fill("input[id='username']", "") # Lembrar sempre de mascarar a senha e o e-mail pro GitHub...
     waitTimeout(1000)
-    pageBling.fill("input[id='username']", "assuntosdiversos1998@gmail.com") # Lembrar sempre de mascarar a senha e o e-mail pro GitHub...
-    waitTimeout(1000)
-    pageBling.fill("input[id='senha']", "Tfm1234@")
+    pageBling.fill("input[id='senha']", "")
     waitTimeout(1000)
     pageBling.click("button[name='enviar']")
     waitTimeout(1000)
-    warning_full_memory = pageBling.locator("xpath=//html/body/div[5]/div[1]/div/i")
-    if warning_full_memory:    
-        warning_full_memory.click()
-        
-    waitTimeout(50000)
+    warning_full_memory_delete = pageBling.locator("xpath=//html/body/div[5]/div[1]/div/i")
+    if warning_full_memory_delete:
+        warning_full_memory_delete.click()
+    waitTimeout(20000)
+    while fim <= 2:
+        input_pesquisa  = pageBling.locator("xpath=//html/body/div[6]/div[3]/div[3]/div[1]/div[1]/div/div[1]/input")
+        waitTimeout(2000)
+        input_pesquisa.fill("002129")
+        waitTimeout(2000)
+        button_search   = pageBling.locator("xpath=//html/body/div[6]/div[3]/div[3]/div[1]/div[1]/div/div[1]/div/div/div") 
+        button_search.click()
+        waitTimeout(3000)
+        three_points    = pageBling.locator("xpath=//html/body/div[6]/div[3]/div[3]/div[2]/table/tbody/tr[1]/td[12]/div/button")
+        three_points.click()
+        conta_a_receber = pageBling.locator("xpath=//html/body/div[6]/div[3]/div[3]/div[2]/table/tbody/tr[1]")
+        waitTimeout(2000)
+        baixar_button   = pageBling.locator("xpath=//html/body/div[6]/div[3]/div[3]/div[2]/table/tbody/tr/td[12]/div/ul/li[1]")
+        baixar_button.click()
+        waitTimeout(2000)
+        mais_opcoes     = pageBling.locator("id=toggle_mais_opcoes_bordero")
+        mais_opcoes.click()
+        waitTimeout(2000)
+        pageBling.mouse.click(x=500, y=365)
+        waitTimeout(2000)
+        input_data      = pageBling.locator("id=dataPopup")
+        input_data.fill("10/10/2022")
+        waitTimeout(2000)
+        forma_pagar     = pageBling.locator("select#idFormaPagamento.bling-item-form")
+        forma_pagar.select_option(label='Amazon')
+        waitTimeout(2000)
+        input_desconto  = pageBling.locator("input#desconto0")
+        input_desconto.fill("20")
+        waitTimeout(2000)
+        input_tarifa    = pageBling.locator("input#tarifa0")
+        input_tarifa.fill("20")
+        pageBling.mouse.click(x=600, y=300)
+        waitTimeout(2000)
+        botao_salvar    = pageBling.locator("button.button-cancel")
+        botao_salvar.click()
+        fim += 1
+        waitTimeout(2000)
+    pageBling.close()
